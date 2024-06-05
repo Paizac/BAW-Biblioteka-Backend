@@ -7,14 +7,19 @@ from book_library_app.utils import validate_json_content_type
 @app.route('/api/v1/authors', methods=['GET'])
 #Funkcja zwracająca listę autorów
 def get_authors():
-    authors = Author.query.all()
-    author_schema = AuthorSchema(many=True)
+    query = Author.query
+    schema_args = Author.get_schema_args(request.args.get('fields'))
+    query = Author.apply_order(query, request.args.get('sort'))
+    query = Author.apply_filter(query)
+    items, pagination = Author.get_pagination(query)
+    authors = AuthorSchema(**schema_args).dump(items)
 
     return jsonify(
         {
             'success': True,
-            'data': author_schema.dump(authors),
-            'number_of_records' : len(authors)
+            'data': authors,
+            'number_of_records': len(authors),
+            'pagination': pagination
         }
     )
 
