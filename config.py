@@ -2,12 +2,11 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 
-
-
 base_dir = Path(__file__).resolve().parent
 #Przechowywanie sciezki do pliku dotenv
 env_file = base_dir / '.env'
-load_dotenv(env_file) #załadowanie ustawień z pliku
+load_dotenv(env_file)  #załadowanie ustawień z pliku
+
 
 #Klasa odpowiedzialna za przechowywanie ustawien aplikacji
 
