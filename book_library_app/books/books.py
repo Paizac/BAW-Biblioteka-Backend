@@ -3,7 +3,7 @@ from flask import jsonify, abort
 from book_library_app.models import Book, BookSchema, book_schema, Author
 from webargs.flaskparser import use_args
 from book_library_app.utils import validate_json_content_type, get_schema_args, apply_order, apply_filter, \
-    get_pagination
+    get_pagination, token_required
 from book_library_app.books import books_bp
 
 
@@ -40,10 +40,11 @@ def get_book(book_id: int):
 
 
 @books_bp.route('/books/<int:book_id>', methods=['PUT'])
+@token_required
 @validate_json_content_type
 @use_args(book_schema, error_status_code=400)
 #Funkcja zwracająca pojedynczą książkę
-def update_book(args: dict, book_id: int):
+def update_book(user_id: int, args: dict, book_id: int):
     book = Book.query.get_or_404(book_id, description=f'Ksiazka z id {book_id} nie zostala znaleziona')
     existing_book = Book.query.filter(Book.isbn == args['isbn']).first()
     if existing_book and existing_book.id != book_id:
@@ -70,8 +71,9 @@ def update_book(args: dict, book_id: int):
 
 
 @books_bp.route('/books/<int:book_id>', methods=['DELETE'])
+@token_required
 #Funkcja zwracająca listę autorów
-def delete_book(book_id: int):
+def delete_book(user_id: int, book_id: int):
     book = Book.query.get_or_404(book_id, description=f'Ksiazka z id {book_id} nie zostala znaleziona')
     db.session.delete(book)
     db.session.commit()
@@ -98,9 +100,10 @@ def get_all_author_books(author_id: int):
 
 
 @books_bp.route('/authors/<int:author_id>/books', methods=['POST'])
+@token_required
 @validate_json_content_type
 @use_args(BookSchema(exclude=['author_id']), error_status_code=400)
-def create_book(args: dict, author_id: int):
+def create_book(user_id: int, args: dict, author_id: int):
     Author.query.get_or_404(author_id, description=f'Autor z id {author_id} nie zostal znaleziony')
     if Book.query.filter(Book.isbn == args['isbn']).first():
         abort(409, description=f'Ksiazka z numerem ISBN {args['isbn']} juz istnieje')

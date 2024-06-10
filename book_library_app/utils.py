@@ -1,5 +1,6 @@
 import re
-from flask import request, url_for, current_app
+import jwt
+from flask import request, url_for, current_app, abort
 from werkzeug.exceptions import UnsupportedMediaType
 from functools import wraps
 from flask_sqlalchemy.model import DefaultMeta
@@ -20,6 +21,32 @@ def validate_json_content_type(func):
         return func(*args, **kwargs)
 
     return wrapper
+
+
+def token_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        token = None
+        auth = request.headers.get('Authorization')
+        if auth:
+            token = auth.split(' ')[1]
+        if token is None:
+            abort(401, description='Brakuje tokena. Prosze o zalogowanie lub rejestracje')
+
+
+
+        try:
+             payload = jwt.decode(token, current_app.config.get('SECRET_KEY'), algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            abort(401, description='Mina czas waznosci tokena. Prosze o zalogowanie aby otrzymac nowy token')
+        except jwt.InvalidTokenError:
+            abort(401, description='Niepoprawny token. Prosze o zalogowanie lub rejestracje')
+        else:
+            return func(payload['user_id'], *args, **kwargs)
+    return wrapper
+
+
+
 
 
 def get_schema_args(model: DefaultMeta) -> dict:

@@ -36,3 +36,7 @@ def internal_server_type_error(err):
 @errors_bp.app_errorhandler(409)
 def conflict_error(err):
     return ErrorResponse(err.description, 409).to_response()
+
+@errors_bp.app_errorhandler(401)
+def unauthorized_error(err):
+    return ErrorResponse(err.description, 401).to_response()
