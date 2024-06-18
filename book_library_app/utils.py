@@ -7,7 +7,7 @@ from flask_sqlalchemy.model import DefaultMeta
 from sqlalchemy.orm import Query, InstrumentedAttribute
 from sqlalchemy.sql.expression import BinaryExpression
 from typing import Tuple
-from config import Config
+
 
 COMPARISON_OPERATORS_RE = re.compile(r'(.*)\[(gte|gt|lte|lt)\]')
 

@@ -1,7 +1,7 @@
 import jwt
 from book_library_app import db
 from marshmallow import Schema, fields, validate, validates, ValidationError
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import current_app
 
@@ -64,7 +64,7 @@ class User(db.Model):
     def generate_jwt(self):
         payload = {
             'user_id': self.id,
-            'exp': datetime.utcnow() + timedelta(minutes=current_app.config.get('JWT_EXPIRED_MINUTES', 30))
+            'exp': datetime.now(timezone.utc) + timedelta(minutes=current_app.config.get('JWT_EXPIRED_MINUTES', 30))
         }
         return jwt.encode(payload, current_app.config.get('SECRET_KEY'))
 
