@@ -106,7 +106,7 @@ def get_all_author_books(author_id: int):
 def create_book(user_id: int, args: dict, author_id: int):
     Author.query.get_or_404(author_id, description=f'Autor z id {author_id} nie zostal znaleziony')
     if Book.query.filter(Book.isbn == args['isbn']).first():
-        abort(409, description=f'Ksiazka z numerem ISBN {args['isbn']} juz istnieje')
+        abort(409, description=f'Ksiazka z numerem ISBN {args["isbn"]} juz istnieje')
 
     book = Book(author_id=author_id, **args)
 
