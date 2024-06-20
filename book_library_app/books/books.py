@@ -48,7 +48,7 @@ def update_book(user_id: int, args: dict, book_id: int):
     book = Book.query.get_or_404(book_id, description=f'Ksiazka z id {book_id} nie zostala znaleziona')
     existing_book = Book.query.filter(Book.isbn == args['isbn']).first()
     if existing_book and existing_book.id != book_id:
-        abort(409, description=f'Ksiazka z numerem ISBN {args['isbn']} juz istnieje')
+        abort(409, description=f'Ksiazka z numerem ISBN {args["isbn"]} juz istnieje')
 
     book.title = args['title']
     book.isbn = args['isbn']

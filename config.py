@@ -10,7 +10,7 @@ load_dotenv(env_file)  # załadowanie ustawień z pliku
 
 # Klasa odpowiedzialna za przechowywanie ustawień aplikacji
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = ''
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     PER_PAGE = 5
@@ -18,7 +18,7 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///' + str(base_dir / 'development.db'))
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
 
 
 class TestingConfig(Config):
@@ -29,10 +29,10 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
-    DB_HOST = os.getenv('DB_HOST', 'localhost')
-    DB_USERNAME = os.getenv('DB_USERNAME', 'root')
-    DB_PASSWORD = os.getenv('DB_PASSWORD', '')
-    DB_NAME = os.getenv('DB_NAME', 'production_db')
+    DB_HOST = os.environ.get('DB_HOST')
+    DB_USERNAME = os.environ.get('DB_USERNAME')
+    DB_PASSWORD = os.environ.get('DB_PASSWORD')
+    DB_NAME = os.environ.get('DB_NAME')
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}?charset=utf8mb4'
 
 
