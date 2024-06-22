@@ -62,4 +62,5 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'Book-library'
+          resource-group: 'library_BAW'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9204A2438E894883B8F0D4D8B1D01E1C }}
